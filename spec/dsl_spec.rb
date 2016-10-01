@@ -96,34 +96,17 @@ describe MarchMadness do
       its(:untie_function) { is_expected.to eq Fixtures::UNTIE_FUNCTION }
     end
 
-    context "with custom bracket type" do
+    context "with missing bracket type" do
       subject(:bracket_1) do
-        MarchMadness.define! do
-          bracket :bracket_1, as: Fixtures::CustomBracket do
-            title 'Bracket Title'
-            active from_date: Fixtures::START_DATE, until_date: Fixtures::END_DATE
-            announcement_date Fixtures::ANNOUNCEMENT_DATE
-            round_duration 1.week
-            allow_byes true
-
-            seeds_with Fixtures::SEEDS_FUNCTION
-            score_with Fixtures::SCORE_FUNCTION
-            untie_with Fixtures::UNTIE_FUNCTION
-          end
+        it do
+          expect do
+            MarchMadness.define! do
+              bracket :bracket_1 do
+              end
+            end
+          end.to raise_error(MissingBracketType, "You must provide a bracket implementation type")
         end
-
-        MarchMadness.definitions[:bracket_1]
       end
-
-      it { is_expected.to be_kind_of Fixtures::CustomBracket }
-      its(:code) { is_expected.to eq :bracket_1 }
-      its(:active_date_range) { is_expected.to eq(Fixtures::START_DATE..Fixtures::END_DATE) }
-      its(:announcement_date) { is_expected.to eq Fixtures::ANNOUNCEMENT_DATE }
-      its(:round_duration) { is_expected.to eq 1.week }
-      its(:allow_byes) { is_expected.to be_truthy }
-      its(:seeds_function) { is_expected.to eq Fixtures::SEEDS_FUNCTION }
-      its(:score_function) { is_expected.to eq Fixtures::SCORE_FUNCTION }
-      its(:untie_function) { is_expected.to eq Fixtures::UNTIE_FUNCTION }
     end
   end
 end
