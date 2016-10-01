@@ -1,12 +1,8 @@
 module MarchMadness
-  class Bracket
-    attr_reader :code
-    attr_accessor :title, :active_date_range, :announcement_date, :round_duration, :allow_byes
+  module Bracket
+    attr_accessor :code, :title, :active_date_range, :announcement_date
+    attr_accessor :round_duration, :allow_byes
     attr_accessor :seeds_function, :score_function, :untie_function
-
-    def initialize(code)
-      @code = code
-    end
 
     def seeds
       seeds_function.call

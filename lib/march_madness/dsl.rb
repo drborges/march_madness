@@ -33,8 +33,10 @@ module MarchMadness
       @brackets = {}
     end
 
-    def bracket(code, &block)
-      bracket_proxy = BracketProxy.new code
+    def bracket(code, options = {}, &block)
+      bracket = options[:as].new
+      bracket.code = code
+      bracket_proxy = BracketProxy.new(bracket)
       bracket_proxy.instance_eval(&block)
       @brackets[code] = bracket_proxy.bracket
     end
@@ -43,8 +45,8 @@ module MarchMadness
   class BracketProxy < BasicObject
     attr_reader :bracket
 
-    def initialize(code)
-      @bracket = Bracket.new code
+    def initialize(bracket)
+      @bracket = bracket
     end
 
     def title(title)

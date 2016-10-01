@@ -1,3 +1,5 @@
+require 'march_madness/bracket'
+
 module Fixtures
   SEEDS_FUNCTION = ->{ 'seeds function' }
   SCORE_FUNCTION = ->{ 'score function' }
@@ -5,4 +7,8 @@ module Fixtures
   START_DATE = Date.new(2016, 9, 30)
   END_DATE = Date.new(2016, 10, 25)
   ANNOUNCEMENT_DATE = Date.new(2016, 10, 26)
+
+  class CustomBracket
+    include MarchMadness::Bracket
+  end
 end
