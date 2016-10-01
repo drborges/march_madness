@@ -1,5 +1,2 @@
-require "march_madness/version"
-
-module MarchMadness
-  # Your code goes here...
-end
+require 'march_madness/version'
+require 'march_madness/dsl'
