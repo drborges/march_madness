@@ -5,4 +5,5 @@ gemspec
 
 group :test, :development do
   gem 'rspec-collection_matchers'
+  gem 'byebug'
 end
