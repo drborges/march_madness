@@ -8,10 +8,16 @@ module MarchMadness
     definition_proxy.instance_eval(&block)
     duplicated_definitions = @@definitions.keys & definition_proxy.brackets.keys
     if duplicated_definitions.present?
-      raise DuplicatedDefinition, "Duplicated bracket definitions: #{duplicated_definitions}."
+      raise DuplicatedDefinition, "Brackets #{duplicated_definitions} were already defined by another define block."
     else
       @@definitions = @@definitions.merge(definition_proxy.brackets)
     end
+  end
+
+  def self.define!(&block)
+    definition_proxy = DefinitionProxy.new
+    definition_proxy.instance_eval(&block)
+    @@definitions = @@definitions.merge(definition_proxy.brackets)
   end
 
   def self.definitions
