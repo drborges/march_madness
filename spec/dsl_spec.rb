@@ -4,7 +4,7 @@ describe MarchMadness do
   it 'has a version number' do
     expect(MarchMadness::VERSION).not_to be nil
   end
-  
+
   describe '#define' do
     context "with multiple definition blocks" do
       subject do
@@ -22,7 +22,6 @@ describe MarchMadness do
         MarchMadness.definitions
       end
 
-      after(:all) { MarchMadness.definitions.clear }
       it { is_expected.to have_exactly(5).defined_brackets }
       it { is_expected.to have_key(:bracket_1) }
       it { is_expected.to have_key(:bracket_2) }
@@ -44,13 +43,13 @@ describe MarchMadness do
         MarchMadness.definitions
       end
 
-      after(:all) { MarchMadness.definitions.clear }
+      before(:all) { MarchMadness.definitions.clear }
       it { is_expected.to have_exactly(1).defined_bracket }
       it { is_expected.to have_key(:bracket_1) }
     end
 
     context "with duplicated definitions" do
-      after(:all) { MarchMadness.definitions.clear }
+      before(:all) { MarchMadness.definitions.clear }
       it { expect {
           MarchMadness.define do
             bracket :bracket_1 do; end
@@ -85,7 +84,6 @@ describe MarchMadness do
       MarchMadness.definitions[:bracket_1]
     end
 
-    after(:all) { MarchMadness.definitions.clear }
     its(:code) { is_expected.to eq :bracket_1 }
     its(:active_date_range) { is_expected.to eq(Fixtures::START_DATE..Fixtures::END_DATE) }
     its(:announcement_date) { is_expected.to eq Fixtures::ANNOUNCEMENT_DATE }
