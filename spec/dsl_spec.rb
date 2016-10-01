@@ -8,17 +8,26 @@ describe MarchMadness do
         bracket :bracket_2 do; end
         bracket :bracket_3 do; end
       end
+
+      MarchMadness.define do
+        bracket :bracket_4 do; end
+        bracket :bracket_5 do; end
+      end
+
+      MarchMadness.definitions
     end
 
-    it { is_expected.to have_exactly(3).defined_brackets }
+    it { is_expected.to have_exactly(5).defined_brackets }
     it { is_expected.to have_key(:bracket_1) }
     it { is_expected.to have_key(:bracket_2) }
     it { is_expected.to have_key(:bracket_3) }
+    it { is_expected.to have_key(:bracket_4) }
+    it { is_expected.to have_key(:bracket_5) }
   end
 
   describe "#bracket" do
     subject(:bracket_1) do
-      definitions = MarchMadness.define do
+      MarchMadness.define do
         bracket :bracket_1 do
           title 'Bracket Title'
           active from_date: Fixtures::START_DATE, until_date: Fixtures::END_DATE
@@ -32,7 +41,7 @@ describe MarchMadness do
         end
       end
 
-      definitions[:bracket_1]
+      MarchMadness.definitions[:bracket_1]
     end
 
     its(:code) { is_expected.to eq :bracket_1 }

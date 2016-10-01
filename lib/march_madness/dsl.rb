@@ -1,10 +1,16 @@
 require 'march_madness/bracket'
 
 module MarchMadness
+  @@definitions = {}
+
   def self.define(&block)
     definition_proxy = DefinitionProxy.new
     definition_proxy.instance_eval(&block)
-    definition_proxy.brackets
+    @@definitions = @@definitions.merge(definition_proxy.brackets)
+  end
+
+  def self.definitions
+    @@definitions
   end
 
   class DefinitionProxy < BasicObject
