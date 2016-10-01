@@ -2,27 +2,43 @@ require 'spec_helper'
 
 describe MarchMadness do
   describe '#define' do
-    subject do
-      MarchMadness.define do
-        bracket :bracket_1 do; end
-        bracket :bracket_2 do; end
-        bracket :bracket_3 do; end
+    context "with multiple definition blocks" do
+      subject do
+        MarchMadness.define do
+          bracket :bracket_1 do; end
+          bracket :bracket_2 do; end
+          bracket :bracket_3 do; end
+        end
+
+        MarchMadness.define do
+          bracket :bracket_4 do; end
+          bracket :bracket_5 do; end
+        end
+
+        MarchMadness.definitions
       end
 
-      MarchMadness.define do
-        bracket :bracket_4 do; end
-        bracket :bracket_5 do; end
-      end
+      before { MarchMadness.definitions.clear }
 
-      MarchMadness.definitions
+      it { is_expected.to have_exactly(5).defined_brackets }
+      it { is_expected.to have_key(:bracket_1) }
+      it { is_expected.to have_key(:bracket_2) }
+      it { is_expected.to have_key(:bracket_3) }
+      it { is_expected.to have_key(:bracket_4) }
+      it { is_expected.to have_key(:bracket_5) }
     end
 
-    it { is_expected.to have_exactly(5).defined_brackets }
-    it { is_expected.to have_key(:bracket_1) }
-    it { is_expected.to have_key(:bracket_2) }
-    it { is_expected.to have_key(:bracket_3) }
-    it { is_expected.to have_key(:bracket_4) }
-    it { is_expected.to have_key(:bracket_5) }
+    context "with duplicated definitions" do
+      it { expect {
+          MarchMadness.define do
+            bracket :bracket_1 do; end
+            bracket :bracket_1 do; end
+            bracket :bracket_2 do; end
+            bracket :bracket_2 do; end
+          end
+        }.to raise_error(MarchMadness::DuplicatedDefinition, "Duplicated bracket definitions: [:bracket_1, :bracket_2].")
+      }
+    end
   end
 
   describe "#bracket" do
@@ -43,6 +59,8 @@ describe MarchMadness do
 
       MarchMadness.definitions[:bracket_1]
     end
+
+    before { MarchMadness.definitions.clear }
 
     its(:code) { is_expected.to eq :bracket_1 }
     its(:active_date_range) { is_expected.to eq(Fixtures::START_DATE..Fixtures::END_DATE) }

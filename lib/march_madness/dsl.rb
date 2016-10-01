@@ -6,12 +6,19 @@ module MarchMadness
   def self.define(&block)
     definition_proxy = DefinitionProxy.new
     definition_proxy.instance_eval(&block)
-    @@definitions = @@definitions.merge(definition_proxy.brackets)
+    duplicated_definitions = @@definitions.keys & definition_proxy.brackets.keys
+    if duplicated_definitions.present?
+      raise DuplicatedDefinition, "Duplicated bracket definitions: #{duplicated_definitions}."
+    else
+      @@definitions = @@definitions.merge(definition_proxy.brackets)
+    end
   end
 
   def self.definitions
     @@definitions
   end
+
+  class DuplicatedDefinition < StandardError; end
 
   class DefinitionProxy < BasicObject
     attr_reader :brackets
