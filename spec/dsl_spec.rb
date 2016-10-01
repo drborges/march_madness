@@ -9,14 +9,14 @@ describe MarchMadness do
     context "with multiple definition blocks" do
       subject do
         MarchMadness.define! do
-          bracket :bracket_1, as: Fixtures::CustomBracket do; end
-          bracket :bracket_2, as: Fixtures::CustomBracket do; end
-          bracket :bracket_3, as: Fixtures::CustomBracket do; end
+          bracket :bracket_1, as: Fixtures::Bracket do; end
+          bracket :bracket_2, as: Fixtures::Bracket do; end
+          bracket :bracket_3, as: Fixtures::Bracket do; end
         end
 
         MarchMadness.define! do
-          bracket :bracket_4, as: Fixtures::CustomBracket do; end
-          bracket :bracket_5, as: Fixtures::CustomBracket do; end
+          bracket :bracket_4, as: Fixtures::Bracket do; end
+          bracket :bracket_5, as: Fixtures::Bracket do; end
         end
 
         MarchMadness.definitions
@@ -33,11 +33,11 @@ describe MarchMadness do
     context "with overriden definitions" do
       subject do
         MarchMadness.define! do
-          bracket :bracket_1, as: Fixtures::CustomBracket do; end
+          bracket :bracket_1, as: Fixtures::Bracket do; end
         end
 
         MarchMadness.define! do
-          bracket :bracket_1, as: Fixtures::CustomBracket do; end
+          bracket :bracket_1, as: Fixtures::Bracket do; end
         end
 
         MarchMadness.definitions
@@ -52,13 +52,13 @@ describe MarchMadness do
       before(:all) { MarchMadness.definitions.clear }
       it { expect {
           MarchMadness.define do
-            bracket :bracket_1, as: Fixtures::CustomBracket do; end
-            bracket :bracket_2, as: Fixtures::CustomBracket do; end
+            bracket :bracket_1, as: Fixtures::Bracket do; end
+            bracket :bracket_2, as: Fixtures::Bracket do; end
           end
 
           MarchMadness.define do
-            bracket :bracket_1, as: Fixtures::CustomBracket do; end
-            bracket :bracket_2, as: Fixtures::CustomBracket do; end
+            bracket :bracket_1, as: Fixtures::Bracket do; end
+            bracket :bracket_2, as: Fixtures::Bracket do; end
           end
         }.to raise_error(MarchMadness::DuplicatedDefinition, "Brackets [:bracket_1, :bracket_2] were already defined by another define block.")
       }
@@ -69,7 +69,7 @@ describe MarchMadness do
     context "with bracket configuration" do
       subject(:bracket_1) do
         MarchMadness.define! do
-          bracket :bracket_1, as: Fixtures::CustomBracket do
+          bracket :bracket_1, as: Fixtures::Bracket do
             title 'Bracket Title'
             active from_date: Fixtures::START_DATE, until_date: Fixtures::END_DATE
             announcement_date Fixtures::ANNOUNCEMENT_DATE
@@ -97,15 +97,24 @@ describe MarchMadness do
     end
 
     context "with missing bracket type" do
-      subject(:bracket_1) do
-        it do
-          expect do
-            MarchMadness.define! do
-              bracket :bracket_1 do
-              end
+      it do
+        expect do
+          MarchMadness.define! do
+            bracket :bracket_1 do
             end
-          end.to raise_error(MissingBracketType, "You must provide a bracket implementation type")
-        end
+          end
+        end.to raise_error(MarchMadness::MissingBracketType, "You must provide a bracket implementation type")
+      end
+    end
+
+    context "with invalid bracket type" do
+      it do
+        expect do
+          MarchMadness.define! do
+            bracket :bracket_1, as: Fixtures::InvalidBracketType do
+            end
+          end
+        end.to raise_error(MarchMadness::InvalidBracketType, "A bracket type must include MarchMadness::Bracket module")
       end
     end
   end

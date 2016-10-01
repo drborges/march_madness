@@ -26,8 +26,9 @@ module MarchMadness
 
   class DuplicatedDefinition < StandardError; end
   class MissingBracketType < StandardError; end
+  class InvalidBracketType < StandardError; end
 
-  class DefinitionProxy < BasicObject
+  class DefinitionProxy
     attr_reader :brackets
 
     def initialize
@@ -35,9 +36,17 @@ module MarchMadness
     end
 
     def bracket(code, options = {}, &block)
-      raise MissingBracketType, "You must provide a bracket implementation type" if !options.has_key?(:as)
+      bracket_type = options[:as]
 
-      bracket = options[:as].new
+      if bracket_type.nil?
+        raise MissingBracketType, "You must provide a bracket implementation type"
+      end
+
+      if !(bracket_type < MarchMadness::Bracket)
+        raise InvalidBracketType, "A bracket type must include MarchMadness::Bracket module"
+      end
+
+      bracket = bracket_type.new
       bracket.code = code
       bracket_proxy = BracketProxy.new(bracket)
       bracket_proxy.instance_eval(&block)
@@ -45,7 +54,7 @@ module MarchMadness
     end
   end
 
-  class BracketProxy < BasicObject
+  class BracketProxy
     attr_reader :bracket
 
     def initialize(bracket)
