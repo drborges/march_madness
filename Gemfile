@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :test, :development do
+  gem 'rspec-its'
   gem 'rspec-collection_matchers'
   gem 'byebug'
 end
